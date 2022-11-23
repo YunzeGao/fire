@@ -2,7 +2,9 @@ package formatter
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/YunzeGao/fire/framework/util"
 	"time"
 
 	"github.com/YunzeGao/fire/framework/contract"
@@ -17,7 +19,7 @@ func TextFormatter(level contract.LogLevel, t time.Time, msg string, fields map[
 	bf.WriteString(prefix)
 	bf.WriteString(Separator)
 
-	ts := t.Format(time.RFC3339)
+	ts := util.DefaultTimeFormatMicroSeconds(t)
 	bf.WriteString(ts)
 	bf.WriteString(Separator)
 
@@ -25,7 +27,11 @@ func TextFormatter(level contract.LogLevel, t time.Time, msg string, fields map[
 	bf.WriteString(msg)
 	bf.WriteString("\"")
 	bf.WriteString(Separator)
+	if content, err := json.Marshal(fields); err == nil {
+		bf.Write(content)
+	} else {
+		bf.WriteString(fmt.Sprint(fields))
+	}
 
-	bf.WriteString(fmt.Sprint(fields))
 	return bf.Bytes(), nil
 }

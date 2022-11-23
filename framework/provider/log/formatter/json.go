@@ -3,6 +3,7 @@ package formatter
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/YunzeGao/fire/framework/util"
 	"time"
 
 	"github.com/YunzeGao/fire/framework/contract"
@@ -14,7 +15,7 @@ func JsonFormatter(level contract.LogLevel, t time.Time, msg string, fields map[
 	bf := bytes.NewBuffer([]byte{})
 	fields["msg"] = msg
 	fields["level"] = level
-	fields["timestamp"] = t.Format(time.RFC3339)
+	fields["timestamp"] = util.DefaultTimeFormatMicroSeconds(t)
 	content, err := json.Marshal(fields)
 	if err != nil {
 		return bf.Bytes(), errors.Wrap(err, "json format error")
